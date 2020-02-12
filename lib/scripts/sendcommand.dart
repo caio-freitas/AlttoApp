@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:toast/toast.dart';
 // import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:altto_app/components/globals.dart' as globals;
 import 'dart:convert'; // to use ASCII
 
@@ -40,24 +39,4 @@ bool sendBluetoothCommand(String command,
     Toast.show('${exception}', context);
     return false;
   }
-}
-
-
-
-void searchBluetoothDevices(BuildContext context) {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
-  // Start scanning
-  flutterBlue.startScan(timeout: Duration(seconds: 4));
-
-  // Listen to scan results
-  var subscription = flutterBlue.scanResults.listen((scanResult) {
-    // do something with scan result
-    var devicee = scanResult[0].device;
-    Toast.show('${devicee.name} found! rssi: ${scanResult[0].rssi}', context,
-                duration: Toast.LENGTH_LONG);
-    return scanResult;
-  });
-
-// Stop scanning
-  flutterBlue.stopScan();
 }

@@ -4,4 +4,4 @@ BluetoothDevice device = BluetoothDevice();
 
 BluetoothConnection connection;
 
-bool using_bluetooth = false;
+bool using_bluetooth = true;

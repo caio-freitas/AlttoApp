@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+// import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:toast/toast.dart';
 import '../BluetoothDeviceListEntry.dart';
@@ -44,9 +45,24 @@ class _DiscoveryPage extends State<DiscoveryPage> {
     _startDiscovery();
   }
 
+  bool isListed(List<BluetoothDiscoveryResult> list,BluetoothDiscoveryResult r) {
+    for (var device in list) {
+      if (device.device.name == r.device.name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
   void _startDiscovery() {
     _streamSubscription = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
-      setState(() { results.add(r); });
+      setState(() {
+        if (!isListed(results, r)) {
+          results.add(r);
+        }
+      });
     });
 
     _streamSubscription.onDone(() {
@@ -63,8 +79,6 @@ class _DiscoveryPage extends State<DiscoveryPage> {
 
     super.dispose();
   }
-
-  // @TODO review flutter_bluetooth_serial original code for connection protocol
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +115,7 @@ class _DiscoveryPage extends State<DiscoveryPage> {
                   value: globals.using_bluetooth,
                   onChanged: (value) {
                     globals.using_bluetooth = value;
+                    Navigator.of(context).pop();
                   },
                 ),
                 Text("Bluetooth"),
@@ -132,7 +147,7 @@ class _DiscoveryPage extends State<DiscoveryPage> {
                           });
                         }
                         catch (exception) {
-                          Toast.show('Erro ao conectar: ${exception}', context, duration: 5*Toast.LENGTH_LONG);
+                          Toast.show('Erro ao conectar!', context, duration: Toast.LENGTH_LONG);
                         }
 
                         Navigator.of(context).pop(result.device);
@@ -146,7 +161,7 @@ class _DiscoveryPage extends State<DiscoveryPage> {
                             print('Desconectado de ${result.device.address}!');
                           }
                           else {
-                            print('Conectando com ${result.device.address}...');
+                            print('Conectando com ${result.device.address}... ');
                             bonded = await FlutterBluetoothSerial.instance.bondDeviceAtAddress(result.device.address);
                             print('Conexão com ${result.device.address} ${bonded ? 'realizada com sucesso' : 'falhou!'}.');
                           }
@@ -182,13 +197,13 @@ class _DiscoveryPage extends State<DiscoveryPage> {
                           );
                         }
                       }
-                  );
-                },
-            ),
-            )
-        ],
-      )
-    ),
+                    );
+                  },
+                ),
+              )
+            ],
+          )
+        ),
     );
   }
 }

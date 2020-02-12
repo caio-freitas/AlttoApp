@@ -27,7 +27,7 @@ class MyHomePage extends StatelessWidget {
           child: Scaffold(
             backgroundColor:
             Theme.of(context).buttonTheme.colorScheme.primaryVariant,
-            appBar: getAppBar(context), //barra superior
+            appBar: getAppBar(context), // barra superior
             body: getBody(context),
           ),
         ),
